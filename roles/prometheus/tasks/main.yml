@@ -1,0 +1,12 @@
+---
+
+- name: Include Ubuntu installation
+  include_tasks: install_ubuntu.yml
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Include RedHat installation
+  include_tasks: install_redhat.yml
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Configure Prometheus
+  include_tasks: configure.yml

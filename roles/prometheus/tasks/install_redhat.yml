@@ -1,0 +1,53 @@
+---
+
+- name: Install dependencies
+  yum:
+    name:
+      - wget
+      - tar
+    state: present
+
+- name: Create Prometheus user
+  user:
+    name: "{{ prometheus_user }}"
+    shell: /sbin/nologin
+
+- name: Create installation directory
+  file:
+    path: "{{ prometheus_install_dir }}"
+    state: directory
+
+- name: Download Prometheus
+  get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz"
+    dest: /tmp/prometheus.tar.gz
+
+- name: Extract Prometheus
+  unarchive:
+    src: /tmp/prometheus.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Copy Prometheus files
+  copy:
+    src: "/tmp/prometheus-{{ prometheus_version }}.linux-amd64/"
+    dest: "{{ prometheus_install_dir }}"
+    remote_src: yes
+
+- name: Deploy Prometheus systemd service
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start Prometheus
+  systemd:
+    name: prometheus
+    state: started
+    enabled: yes

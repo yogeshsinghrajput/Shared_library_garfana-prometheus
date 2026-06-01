@@ -1,0 +1,20 @@
+---
+
+- name: Configure Grafana
+  template:
+    src: grafana.ini.j2
+    dest: /etc/grafana/grafana.ini
+  notify:
+    - Restart Grafana
+
+- name: Create datasource directory
+  file:
+    path: /etc/grafana/provisioning/datasources
+    state: directory
+
+- name: Configure Prometheus datasource
+  template:
+    src: datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/datasource.yml
+  notify:
+    - Restart Grafana

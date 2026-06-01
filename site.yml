@@ -1,0 +1,15 @@
+---
+
+- name: Install Prometheus
+  hosts: prometheus
+  become: yes
+
+  roles:
+    - prometheus
+
+- name: Install Grafana
+  hosts: grafana
+  become: yes
+
+  roles:
+    - grafana

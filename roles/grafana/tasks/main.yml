@@ -1,0 +1,12 @@
+---
+
+- name: Include Ubuntu installation
+  include_tasks: install_ubuntu.yml
+  when: ansible_os_family == "Debian"
+
+- name: Include RedHat installation
+  include_tasks: install_redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- name: Configure Grafana
+  include_tasks: configure.yml
